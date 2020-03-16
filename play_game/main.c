@@ -8,7 +8,6 @@ const int HOUSE_COUNT = 12;
 
 // see oware.h
 void oware_new_game(struct oware_board *board) {
-  // COMPLETE THIS FUNCTION
   assert(board);
   for (int i = 0; i < 12; ++i) {
     board->houses[i] = 4;
@@ -21,7 +20,6 @@ void oware_new_game(struct oware_board *board) {
 
 // see oware.h
 int oware_seed_count(const struct oware_board *board, int player) {
-  // COMPLETE THIS FUNCTION
   assert(player == 1 || player == 2);
   assert(board);
   int result = 0;
@@ -71,18 +69,15 @@ static bool valid_oppo_no_seed(const struct oware_board *board, int house) {
 
 // see oware.h
 bool oware_valid_move(const struct oware_board *board, int house) {
-  // COMPLETE THIS FUNCTION
   assert(board);
   assert(0 <= house && house <= 11);
   return (own_house(board, house) && 
           board->houses[house] > 0 &&
           valid_oppo_no_seed(board, house));  
-  // REPLACE ME
 }
 
 // see oware.h
 void oware_make_move(struct oware_board *board, int house) {
-  // COMPLETE THIS FUNCTION
   assert(oware_valid_move);
   assert(board);
   assert(0 <= house && house <= 11);
@@ -183,7 +178,6 @@ bool oware_game_over(const struct oware_board *board) {
 
 // see oware.h
 void oware_end_game(struct oware_board *board) {
-  // COMPLETE THIS FUNCTION
   assert(board);
   board->scores[0] += oware_seed_count(board,1);
   board->scores[1] += oware_seed_count(board,2);
