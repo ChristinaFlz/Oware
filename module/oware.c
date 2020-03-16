@@ -7,6 +7,7 @@ const int HOUSE_COUNT = 12;
 
 // see oware.h
 void oware_new_game(struct oware_board *board) {
+  // COMPLETE THIS FUNCTION
   assert(board);
   for (int i = 0; i < 12; ++i) {
     board->houses[i] = 4;
@@ -19,6 +20,7 @@ void oware_new_game(struct oware_board *board) {
 
 // see oware.h
 int oware_seed_count(const struct oware_board *board, int player) {
+  // COMPLETE THIS FUNCTION
   assert(player == 1 || player == 2);
   assert(board);
   int result = 0;
@@ -38,8 +40,8 @@ int oware_seed_count(const struct oware_board *board, int player) {
 // own_hourse(board, house) determines if the house is owed by the player
 // requires: board is valid 
 //           house is between 0 (house A) and 11 (house L)
-bool own_house(const struct oware_board *board, int house) {
-  // assert(board->turn == 1 || board->turn == 2);
+static bool own_house(const struct oware_board *board, int house) {
+  assert(board);
   if (board->turn == 1) {
     return (0 <= house && house <= 5);
   } else  {
@@ -51,7 +53,7 @@ bool own_house(const struct oware_board *board, int house) {
 //  is valid when the opponent has no seed
 // requires: board is valid 
 //           house is between 0 (house A) and 11 (house L)
-bool valid_oppo_no_seed(const struct oware_board *board, int house) {
+static bool valid_oppo_no_seed(const struct oware_board *board, int house) {
   assert(board);
   assert(0 <= house && house <= 11);
   if (board->turn == 1) {
@@ -68,16 +70,18 @@ bool valid_oppo_no_seed(const struct oware_board *board, int house) {
 
 // see oware.h
 bool oware_valid_move(const struct oware_board *board, int house) {
+  // COMPLETE THIS FUNCTION
   assert(board);
   assert(0 <= house && house <= 11);
-
   return (own_house(board, house) && 
           board->houses[house] > 0 &&
-          valid_oppo_no_seed(board, house));
+          valid_oppo_no_seed(board, house));  
+  // REPLACE ME
 }
 
 // see oware.h
 void oware_make_move(struct oware_board *board, int house) {
+  // COMPLETE THIS FUNCTION
   assert(oware_valid_move);
   assert(board);
   assert(0 <= house && house <= 11);
@@ -105,24 +109,39 @@ void oware_make_move(struct oware_board *board, int house) {
   if (last == -1) {
     last = 11;
   }
-  
+  // capture seed if possible and set board->house to 0
   int backwards = last;
   while (1) {   
     if (backwards == -1) {
       backwards = 11;
     }
+    if ((board->houses[last] == 2 || 
+         board->houses[last] == 3) 
+        && (own_house(board,last))) {
+      break;
+    }  
     if (board->houses[backwards] == 2 || 
         board->houses[backwards] == 3) {
       if (player == 1 && 
           (6 <= backwards && backwards <= 11)) {
-        board->scores[0] += board->houses[backwards];
-        board->houses[backwards] = 0;
+        if (oware_seed_count(board, 2) == 
+            board->houses[backwards]) {
+          break;
+        } else {
+          board->scores[0] += board->houses[backwards];
+          board->houses[backwards] = 0;
+        }
       }  
       if (player == 2 && 
           (0 <= backwards && backwards <= 5)) {
-        board->scores[1] += board->houses[backwards];
-        board->houses[backwards] = 0;
-      }    
+        if (oware_seed_count(board, 1) == 
+            board->houses[backwards]) {
+          break;
+        } else {
+          board->scores[1] += board->houses[backwards];
+          board->houses[backwards] = 0;
+        }
+      }
     } else {
       break;
     }
@@ -134,12 +153,10 @@ void oware_make_move(struct oware_board *board, int house) {
   } else {
     board->turn = 1;
   }
-
 }
 
 // see oware.h
 bool oware_game_over(const struct oware_board *board) {
-  // COMPLETE THIS FUNCTION
   assert(board);
   if (board->scores[0] >= 25 || 
       board->scores[1] >= 25) {
@@ -159,7 +176,7 @@ bool oware_game_over(const struct oware_board *board) {
       } 
     }
   }
-  return result;
+  return result; // REPLACE ME
 }
 
 
@@ -167,10 +184,7 @@ bool oware_game_over(const struct oware_board *board) {
 void oware_end_game(struct oware_board *board) {
   // COMPLETE THIS FUNCTION
   assert(board);
-
-  // for (int h = 0; h < 6; ++h) {
   board->scores[0] += oware_seed_count(board,1);
-  // }
   board->scores[1] += oware_seed_count(board,2);
   for (int i = 0; i < 12; ++i) {
     board->houses[i] = 0;
